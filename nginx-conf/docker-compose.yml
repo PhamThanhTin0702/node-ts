@@ -1,0 +1,10 @@
+services:
+    nginxapp:
+      image: nginx/node
+      networks: 
+        - chat-api-v2_app-net
+      volumes:
+        - ./:/etc/nginx/conf.d # mount từ môi trường gốc vào trong để nếu các bạn thay đổi code thì bên trong sẽ tự động cập nhật
+      ports:
+        - 3001:80 # phần này ta định nghĩa ở file .env nhé
+      restart: unless-stopped

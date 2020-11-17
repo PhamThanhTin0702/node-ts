@@ -1,0 +1,34 @@
+networks: 
+  nginx-app:
+    driver: bridge
+
+services:
+  app:
+    image: chat-node:latest
+    networks: 
+      - nginx-app
+    volumes:
+      - ./build:/home/node/app/build # mount từ môi trường gốc vào trong để nếu các bạn thay đổi code thì bên trong sẽ tự động cập nhật
+    ports:
+      - 4001:4001 # phần này ta định nghĩa ở file .env nhé
+    restart: unless-stopped
+    depends_on:
+      - db
+
+  db:
+    image: mongo
+    networks: 
+      - nginx-app
+    restart: unless-stopped
+    ports:
+     - 5001:27017
+
+  nginxapp:
+    image: nginx/node
+    networks: 
+      - nginx-app
+    volumes:
+      - ./nginx-conf:/etc/nginx/conf.d # mount từ môi trường gốc vào trong để nếu các bạn thay đổi code thì bên trong sẽ tự động cập nhật
+    ports:
+      - 3001:80 # phần này ta định nghĩa ở file .env nhé
+    restart: unless-stopped
